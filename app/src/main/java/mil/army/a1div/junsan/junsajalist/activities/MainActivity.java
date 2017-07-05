@@ -1,8 +1,16 @@
 package mil.army.a1div.junsan.junsajalist.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -28,6 +36,28 @@ public class MainActivity extends Activity {
     TextView count = null;
     TextView sosok = null;
     TextView name = null;
+    private MusicService mService;
+    private boolean mBound = false;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MusicService.ServiceBinder binder = (MusicService.ServiceBinder) iBinder;
+            mService = binder.getService();
+            mService.mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    findViewById(R.id.playStop).setBackgroundResource(R.mipmap.ic_start);
+                }
+            });
+
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +140,7 @@ public class MainActivity extends Activity {
                     junsaDate.append(". ");
                     junsaDate.append(Integer.toString(temp));
                 }
+                junsaDate.append("\n");
 
                 //연도 예하(?)에 있는 다른 소속 수 만큼 빈 줄 넣어주기
                 count.append("" + (i - startOfYear + 1) + "명\n");
@@ -127,8 +158,7 @@ public class MainActivity extends Activity {
                 // 소속 바뀌는걸 감지
                 sosok.append(soldiers[i].getSosok().toString());
                 sosok.append("\n");
-                junsaDate.append("\n");
-                if (i - startOfSosok >= 2) {
+                if (i - startOfSosok > 2) {
                     // 한 줄에 3명 이상이 들어가야함 (전 줄에 입력을 다 끝났을 때 해주는 것임)
                     name.append(soldiers[startOfSosok].nameRank());
                     name.append(" 등 " + (i - startOfSosok) + "명");
@@ -148,5 +178,42 @@ public class MainActivity extends Activity {
                 //
             }
         }
+
+        final ImageButton playStop = findViewById(R.id.playStop);
+        playStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("PLAYSTOP_BUTTON", "OnClick Activated!!!");
+                if (!mBound) {
+                    return;
+                }
+                if (!mService.mPlayer.isPlaying()) {
+                    mService.startMusic();
+                    playStop.setBackgroundResource(R.mipmap.ic_stop);
+                } else {
+                    mService.stopMusic();
+                    playStop.setBackgroundResource(R.mipmap.ic_start);
+                }
+            }
+        });
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
 }
