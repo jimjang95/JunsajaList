@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/junsaja_list"
         android:paddingLeft="90dp"
-        android:paddingRight="90dp">
+        android:paddingRight="90dp"
+        android:id="@+id/linearLayout">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -119,70 +120,20 @@
 
     </LinearLayout>
 
-
-    
-    <!--<TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/junsaja_list"
-        android:paddingTop="40dp"
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="25"
-                android:text="전사일"
-                android:textSize="30dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:layout_gravity="center"
-                android:text="인원"
-                android:textSize="30dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:layout_gravity="center"
-                android:text="부대"
-                android:textSize="30dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="35"
-                android:layout_gravity="center"
-                android:text="명단"
-                android:textSize="30dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:text="전투"
-                android:textSize="30dp"/>
-        </TableRow>
-
-    </TableLayout>-->
+    <ImageButton
+        android:id="@+id/playStopKorea"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@mipmap/ic_korea"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentBottom="true" />
 
     <ImageButton
-        android:id="@+id/playStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@mipmap/ic_start"
+        android:id="@+id/playStopUS"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@mipmap/ic_us"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="40dp" />
-
+        android:layout_toRightOf="@+id/playStopKorea" />
 
 </RelativeLayout>

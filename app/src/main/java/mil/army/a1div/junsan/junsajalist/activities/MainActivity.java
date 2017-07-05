@@ -43,13 +43,6 @@ public class MainActivity extends Activity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.ServiceBinder binder = (MusicService.ServiceBinder) iBinder;
             mService = binder.getService();
-            mService.mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    findViewById(R.id.playStop).setBackgroundResource(R.mipmap.ic_start);
-                }
-            });
-
             mBound = true;
         }
 
@@ -71,7 +64,7 @@ public class MainActivity extends Activity {
 
         Date today = new Date();
         int month = today.getMonth() + 1;
-        int day = today.getDay() + 1;
+        int day = today.getDate();
         String fileName = "sortByDate/";
         if (month < 10) {
             fileName += '0';
@@ -179,8 +172,9 @@ public class MainActivity extends Activity {
             }
         }
 
-        final ImageButton playStop = findViewById(R.id.playStop);
-        playStop.setOnClickListener(new View.OnClickListener() {
+        final ImageButton playStopKorea = findViewById(R.id.playStopKorea);
+        final ImageButton playStopUS = findViewById(R.id.playStopUS);
+        playStopKorea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("PLAYSTOP_BUTTON", "OnClick Activated!!!");
@@ -189,10 +183,8 @@ public class MainActivity extends Activity {
                 }
                 if (!mService.mPlayer.isPlaying()) {
                     mService.startMusic();
-                    playStop.setBackgroundResource(R.mipmap.ic_stop);
                 } else {
                     mService.stopMusic();
-                    playStop.setBackgroundResource(R.mipmap.ic_start);
                 }
             }
         });
