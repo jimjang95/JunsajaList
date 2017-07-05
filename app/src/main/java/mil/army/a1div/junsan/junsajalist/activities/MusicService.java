@@ -53,12 +53,35 @@ public class MusicService extends Service implements MediaPlayer.OnErrorListener
         return START_STICKY;
     }
 
-    public void startMusic() {
+    public void startMusicKr() {
         try {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = MediaPlayer.create(this, R.raw.muknyum);
             mPlayer.prepareAsync();
             mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 public void onPrepared(MediaPlayer mp) {
                     Log.d("MUSIC_SERVICE", "onPrepared()");
+                    mp.seekTo(0);
+                    mp.start();
+                }
+            });
+        } catch (IllegalStateException e) {
+            Log.d("MUSIC_SERVICE", "caught IllegalState!");
+            mPlayer.seekTo(0);
+            mPlayer.start();
+        }
+    }
+
+    public void startMusicEn() {
+        try {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = MediaPlayer.create(this, R.raw.muknyum_eng);
+            mPlayer.prepareAsync();
+            mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    Log.d("MUSIC_SERVICE", "onPreparedEnglish()");
                     mp.seekTo(0);
                     mp.start();
                 }

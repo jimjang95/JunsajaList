@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -61,6 +63,19 @@ public class MainActivity extends Activity {
         count = (TextView) findViewById(R.id.count);
         sosok = (TextView) findViewById(R.id.sosok);
         name = (TextView) findViewById(R.id.name);
+
+        Typeface tf = Typeface.createFromAsset(getAssets(), "h2mjre.TTF");
+        junsajaList.setTypeface(tf);
+        junsaDate.setTypeface(tf);
+        count.setTypeface(tf);
+        sosok.setTypeface(tf);
+        name.setTypeface(tf);
+        ((TextView) findViewById(R.id.title0)).setTypeface(tf);
+        ((TextView) findViewById(R.id.title1)).setTypeface(tf);
+        ((TextView) findViewById(R.id.title2)).setTypeface(tf);
+        ((TextView) findViewById(R.id.title3)).setTypeface(tf);
+        ((TextView) findViewById(R.id.title4)).setTypeface(tf);
+
 
         Date today = new Date();
         int month = today.getMonth() + 1;
@@ -112,8 +127,24 @@ public class MainActivity extends Activity {
         int startOfSosok = 0;
         int endOfSection = 0;
         int sosokCount = 0;
-        int curYear = 0;
-        Sosok curSosok = null;
+        int curYear = soldiers[0].getYear();
+        junsaDate.append(Integer.toString(curYear));
+        junsaDate.append(". ");
+        if (soldiers[0].getMonth() < 10) {
+            junsaDate.append(" ");
+        }
+        junsaDate.append(Integer.toString(soldiers[0].getMonth()));
+        if (soldiers[0].getDay() < 10) {
+            junsaDate.append(".  ");
+            junsaDate.append(Integer.toString(soldiers[0].getDay()));
+        } else {
+            junsaDate.append(". ");
+            junsaDate.append(Integer.toString(soldiers[0].getDay()));
+        }
+        junsaDate.append("\n");
+        sosok.append(soldiers[0].getSosok().toString());
+        sosok.append("\n");
+        Sosok curSosok = soldiers[0].getSosok();
         for (int i = 0; i < soldiers.length; i++) {
             if (soldiers[i].getYear() != curYear) {
                 //연도가 바뀌면 그 때 연도를 TextView에 출력
@@ -138,9 +169,30 @@ public class MainActivity extends Activity {
                 //연도 예하(?)에 있는 다른 소속 수 만큼 빈 줄 넣어주기
                 count.append("" + (i - startOfYear + 1) + "명\n");
                 for (int j = 0; j < sosokCount; j++) {
-                    junsaDate.append("\n");
                     count.append("\n");
                 }
+
+                if (soldiers[i].getSosok().equals(curSosok)) {
+                    //연도가 바뀌었는데 소속이 안 바뀐 경우를 잡아줌
+                    sosok.append(soldiers[i].getSosok().toString());
+                    sosok.append("\n");
+                    if (i - startOfSosok > 2) {
+                        // 한 줄에 3명 이상이 들어가야함 (전 줄에 입력을 다 끝났을 때 해주는 것임)
+                        name.append(soldiers[startOfSosok].nameRank());
+                        name.append(" 등 " + (i - startOfSosok) + "명");
+                    } else {
+                        for (int j = startOfSosok; j <= i; j++) {
+                            name.append(soldiers[j].nameRank());
+                            if (j != i - 1) {
+                                name.append(", ");
+                            }
+                        }
+                    }
+                    junsaDate.append("\n");
+                    name.append("\n");
+                    sosokCount++;
+                }
+
                 //연도 바뀌었으니까 다 초기화
                 startOfYear = i;
                 startOfSosok = i;
@@ -163,6 +215,7 @@ public class MainActivity extends Activity {
                         }
                     }
                 }
+                junsaDate.append("\n");
                 name.append("\n");
                 startOfSosok = i;
                 curSosok = soldiers[i].getSosok();
@@ -182,13 +235,26 @@ public class MainActivity extends Activity {
                     return;
                 }
                 if (!mService.mPlayer.isPlaying()) {
-                    mService.startMusic();
+                    mService.startMusicKr();
                 } else {
                     mService.stopMusic();
                 }
             }
         });
-
+        playStopUS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("PLAYSTOP_BUTTON", "OnClick Activated!!!");
+                if (!mBound) {
+                    return;
+                }
+                if (!mService.mPlayer.isPlaying()) {
+                    mService.startMusicEn();
+                } else {
+                    mService.stopMusic();
+                }
+            }
+        });
     }
 
     @Override
