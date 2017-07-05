@@ -174,4 +174,15 @@
 
     </TableLayout>-->
 
+    <ImageButton
+        android:id="@+id/playStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/ic_start"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="40dp" />
+
+
 </RelativeLayout>
